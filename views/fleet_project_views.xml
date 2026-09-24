@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fleet Project Tree View -->
+    <record id="view_fleet_project_tree" model="ir.ui.view">
+        <field name="name">fleet.project.tree</field>
+        <field name="model">fleet.project</field>
+        <field name="arch" type="xml">
+            <tree string="Fleet Projects" decoration-success="main_container_status == 'running'" decoration-danger="main_container_status in ('stopped', 'error')">
+                <field name="name" font_weight="bold"/>
+                <field name="repo_url" widget="url"/>
+                <field name="odoo_version"/>
+                <field name="main_domain" widget="url"/>
+                <field name="main_container_status" widget="badge" decoration-success="main_container_status == 'running'" decoration-warning="main_container_status == 'building'" decoration-danger="main_container_status in ('stopped', 'error')"/>
+                <field name="main_db_name"/>
+                <field name="active_staging_count" string="Staging Envs"/>
+                <field name="total_build_count" string="Builds"/>
+                <field name="total_backup_count" string="Backups"/>
+                <field name="last_synced" widget="remaining_days"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Fleet Project Kanban View -->
+    <record id="view_fleet_project_kanban" model="ir.ui.view">
+        <field name="name">fleet.project.kanban</field>
+        <field name="model">fleet.project</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard" sample="1">
+                <field name="name"/>
+                <field name="repo_url"/>
+                <field name="odoo_version"/>
+                <field name="main_domain"/>
+                <field name="main_container_status"/>
+                <field name="active_staging_count"/>
+                <field name="total_build_count"/>
+                <field name="total_backup_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record d-flex flex-column justify-content-between p-3" style="min-height: 200px; border-radius: 8px; border-left: 5px solid #00A09D;">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h4 class="mb-0 font-weight-bold text-primary">
+                                        <i class="fa fa-server me-1"/> <field name="name"/>
+                                    </h4>
+                                    <span t-if="record.main_container_status.raw_value == 'running'" class="badge rounded-pill bg-success">
+                                        <i class="fa fa-circle text-white me-1"/> RUNNING
+                                    </span>
+                                    <span t-elif="record.main_container_status.raw_value == 'building'" class="badge rounded-pill bg-warning text-dark">
+                                        <i class="fa fa-spin fa-spinner me-1"/> BUILDING
+                                    </span>
+                                    <span t-else="" class="badge rounded-pill bg-secondary">
+                                        <i class="fa fa-stop-circle me-1"/> STOPPED
+                                    </span>
+                                </div>
+
+                                <div class="text-muted small mb-2 text-truncate" t-if="record.repo_url.raw_value">
+                                    <i class="fa fa-github me-1"/> <field name="repo_url"/>
+                                </div>
+
+                                <div class="text-muted small mb-3">
+                                    <span class="badge bg-light text-dark me-2">Odoo <field name="odoo_version"/></span>
+                                    <span class="badge bg-info text-white me-2"><i class="fa fa-code-fork"/> <field name="active_staging_count"/> Staging</span>
+                                    <span class="badge bg-secondary text-white"><i class="fa fa-database"/> <field name="total_backup_count"/> Backups</span>
+                                </div>
+                            </div>
+
+                            <div class="border-top pt-2 mt-auto d-flex justify-content-between align-items-center">
+                                <a t-if="record.main_domain.raw_value" t-att-href="'http://' + record.main_domain.raw_value" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-external-link me-1"/> Open Main
+                                </a>
+                                <div class="btn-group">
+                                    <button type="object" name="action_open_create_staging_wizard" class="btn btn-sm btn-outline-secondary" title="New Staging Branch">
+                                        <i class="fa fa-plus"/> Staging
+                                    </button>
+                                    <button type="object" name="action_deploy_main" class="btn btn-sm btn-outline-danger" title="Deploy Production">
+                                        <i class="fa fa-rocket"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Fleet Project Form View -->
+    <record id="view_fleet_project_form" model="ir.ui.view">
+        <field name="name">fleet.project.form</field>
+        <field name="model">fleet.project</field>
+        <field name="arch" type="xml">
+            <form string="Fleet Project">
+                <header>
+                    <button name="action_deploy_main" string="Deploy Production (Main)" type="object" class="btn btn-primary" icon="fa-rocket" confirm="Trigger deploy for the main production branch?" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_open_create_staging_wizard" string="Create Staging Branch" type="object" class="btn btn-secondary" icon="fa-code-fork" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_backup_main" string="Snapshot Main DB" type="object" class="btn btn-secondary" icon="fa-database" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_optimize_main_db" string="Optimize DB" type="object" class="btn btn-secondary" icon="fa-wrench" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_open_main_url" string="Open Production URL" type="object" class="btn btn-info" icon="fa-external-link"/>
+                    <button name="action_sync" string="Refresh From Platform" type="object" class="btn btn-link" icon="fa-refresh"/>
+                    <field name="main_container_status" widget="statusbar" statusbar_visible="running,stopped"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_staging_branches" type="object" class="oe_stat_button" icon="fa-code-fork">
+                            <field name="active_staging_count" string="Staging Envs" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_project_builds" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="total_build_count" string="Build History" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_project_backups" type="object" class="oe_stat_button" icon="fa-database">
+                            <field name="total_backup_count" string="DB Backups" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Project Name / Slug"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. acme-corp"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Repository &amp; Stack">
+                            <field name="repo_url" widget="url" placeholder="https://github.com/org/repo"/>
+                            <field name="odoo_version"/>
+                        </group>
+                        <group string="Production Environment">
+                            <field name="main_domain" widget="url" placeholder="acme-corp.odoo.internal"/>
+                            <field name="main_db_name"/>
+                            <field name="last_synced"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Staging Branches &amp; Environments" name="staging_branches">
+                            <field name="branch_ids">
+                                <tree string="Branches" decoration-success="status == 'running'" decoration-danger="status in ('stopped', 'error')">
+                                    <field name="branch_name" font_weight="bold"/>
+                                    <field name="branch_type" widget="badge"/>
+                                    <field name="status" widget="badge" decoration-success="status == 'running'" decoration-danger="status in ('stopped', 'error')"/>
+                                    <field name="domain_url" widget="url"/>
+                                    <field name="db_name"/>
+                                    <button name="action_open_env_url" string="Open" type="object" icon="fa-external-link" class="btn btn-sm btn-outline-primary"/>
+                                    <button name="action_rebuild_branch" string="Rebuild" type="object" icon="fa-refresh" class="btn btn-sm btn-outline-secondary" groups="fleet_connector.group_fleet_developer"/>
+                                    <button name="action_destroy_branch" string="Destroy" type="object" icon="fa-trash text-danger" class="btn btn-sm btn-outline-danger" confirm="Are you sure you want to tear down this staging environment and drop its database?" groups="fleet_connector.group_fleet_developer"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Build &amp; Deployment History" name="build_history">
+                            <field name="build_ids">
+                                <tree string="Builds" decoration-success="status == 'success'" decoration-danger="status == 'failed'">
+                                    <field name="timestamp"/>
+                                    <field name="branch_name"/>
+                                    <field name="short_sha"/>
+                                    <field name="commit_message"/>
+                                    <field name="author"/>
+                                    <field name="status" widget="badge" decoration-success="status == 'success'" decoration-danger="status == 'failed'"/>
+                                    <field name="trigger_source"/>
+                                    <button name="action_analyze_build_errors" string="Diagnose" type="object" icon="fa-stethoscope" class="btn btn-sm btn-outline-info"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Database Snapshots &amp; Backups" name="backups">
+                            <field name="backup_ids">
+                                <tree string="Backups">
+                                    <field name="created_at"/>
+                                    <field name="branch_name"/>
+                                    <field name="filename"/>
+                                    <field name="file_size_formatted"/>
+                                    <field name="backup_format"/>
+                                    <field name="reason"/>
+                                    <button name="action_download_backup" string="Download" type="object" icon="fa-download" class="btn btn-sm btn-outline-primary"/>
+                                    <button name="action_open_restore_wizard" string="Restore" type="object" icon="fa-history" class="btn btn-sm btn-outline-danger" groups="fleet_connector.group_fleet_developer"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Documentation &amp; Notes" name="notes">
+                            <field name="notes" placeholder="Add operator notes, branch release plans, or architectural details..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_fleet_project_search" model="ir.ui.view">
+        <field name="name">fleet.project.search</field>
+        <field name="model">fleet.project</field>
+        <field name="arch" type="xml">
+            <search string="Search Fleet Projects">
+                <field name="name"/>
+                <field name="repo_url"/>
+                <field name="main_domain"/>
+                <filter string="Running" name="filter_running" domain="[('main_container_status', '=', 'running')]"/>
+                <filter string="Stopped" name="filter_stopped" domain="[('main_container_status', 'in', ['stopped', 'error'])]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Odoo Version" name="group_version" domain="[]" context="{'group_by': 'odoo_version'}"/>
+                    <filter string="Container Status" name="group_status" domain="[]" context="{'group_by': 'main_container_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_fleet_project" model="ir.actions.act_window">
+        <field name="name">Fleet Projects</field>
+        <field name="res_model">fleet.project</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Fleet Projects Discovered!
+            </p>
+            <p>
+                Click <b>Sync Fleet Projects</b> or verify your Personal API Token in your User Profile to discover all projects connected to the Fleet Platform.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sync All Server Action -->
+    <record id="action_server_sync_all_fleet_projects" model="ir.actions.server">
+        <field name="name">Sync Fleet Platform</field>
+        <field name="model_id" ref="model_fleet_project"/>
+        <field name="binding_model_id" ref="model_fleet_project"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_sync_all_projects()</field>
+    </record>
+</odoo>

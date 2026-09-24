@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odoo Fleet Control Room Connector</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; line-height: 1.6; margin: 0; padding: 20px; background-color: #f8fafc;">
+    <div style="max-width: 900px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+        
+        <!-- Header Banner -->
+        <div style="text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 30px; margin-bottom: 30px;">
+            <span style="background: #00A09D; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;">DevOps &amp; Multi-Tenant Fleet</span>
+            <h1 style="color: #0f172a; font-size: 32px; margin: 15px 0 10px 0;">Odoo Fleet Control Connector</h1>
+            <p style="font-size: 18px; color: #64748b; max-width: 700px; margin: 0 auto;">
+                Connect, monitor, deploy, and manage your Odoo.sh-style multi-project fleet directly from Odoo UI using Personal API Tokens and RBAC.
+            </p>
+        </div>
+
+        <!-- Key Features Grid -->
+        <h2 style="color: #0f172a; font-size: 22px; margin-bottom: 20px;">Key Capabilities</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            
+            <div style="padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fdfdfd;">
+                <h3 style="color: #00A09D; font-size: 18px; margin-top: 0;">🔑 Personal API Token &amp; RBAC</h3>
+                <p style="color: #475569; font-size: 14px; margin-bottom: 0;">
+                    Each operator configures their personal access token in their User Profile. Token roles (Admin, Developer, Viewer) automatically sync with Odoo security groups.
+                </p>
+            </div>
+
+            <div style="padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fdfdfd;">
+                <h3 style="color: #00A09D; font-size: 18px; margin-top: 0;">🚀 1-Click Multi-Project Fleet</h3>
+                <p style="color: #475569; font-size: 14px; margin-bottom: 0;">
+                    Inspect production environments, container uptime, database health, Traefik hostnames, and trigger production builds with a single click.
+                </p>
+            </div>
+
+            <div style="padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fdfdfd;">
+                <h3 style="color: #00A09D; font-size: 18px; margin-top: 0;">🌿 Ephemeral Staging Branches</h3>
+                <p style="color: #475569; font-size: 14px; margin-bottom: 0;">
+                    Branch out staging environments on demand directly from Git branches. Clean up and destroy staging containers when PR testing is done.
+                </p>
+            </div>
+
+            <div style="padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fdfdfd;">
+                <h3 style="color: #00A09D; font-size: 18px; margin-top: 0;">💾 DB Backups &amp; Overwrite Restore</h3>
+                <p style="color: #475569; font-size: 14px; margin-bottom: 0;">
+                    Snapshot databases before risky upgrades, download binary dumps, and restore backups to main or staging with built-in safety confirmations.
+                </p>
+            </div>
+
+            <div style="padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fdfdfd;">
+                <h3 style="color: #00A09D; font-size: 18px; margin-top: 0;">🛡️ Sandbox Neutralizer</h3>
+                <p style="color: #475569; font-size: 14px; margin-bottom: 0;">
+                    Prevent accidental customer emails and live charges on staging. Neutralize mail servers and force payment gateways to test mode in one click.
+                </p>
+            </div>
+
+            <div style="padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fdfdfd;">
+                <h3 style="color: #00A09D; font-size: 18px; margin-top: 0;">🩺 AI Diagnostics &amp; Quick-Fix</h3>
+                <p style="color: #475569; font-size: 14px; margin-bottom: 0;">
+                    Automated diagnosis of XML ParseErrors, KeyError dependencies, duplicate IDs, and instant execution of automated remediation fixes.
+                </p>
+            </div>
+        </div>
+
+        <!-- Quick Start Guide -->
+        <h2 style="color: #0f172a; font-size: 22px; margin-bottom: 15px;">Quick Setup Guide</h2>
+        <ol style="color: #334155; padding-left: 20px; line-height: 1.8;">
+            <li>Navigate to <b>Settings &gt; Fleet Control</b> and configure your Fleet Platform Base URL (e.g. <code>http://127.0.0.1:8000</code>).</li>
+            <li>Open your <b>User Preferences</b> or <b>Settings &gt; Users &gt; [Your User] &gt; Fleet Platform Access</b>.</li>
+            <li>Paste your <b>Personal API Token</b> (e.g. <code>admin-secret-prixgen-key</code> or <code>pxg_usr_...</code>) and click <b>Verify Token &amp; Sync Rights</b>.</li>
+            <li>Open the <b>Fleet Control Room</b> menu to view and manage all projects, staging branches, builds, and backups!</li>
+        </ol>
+
+    </div>
+</body>
+</html>

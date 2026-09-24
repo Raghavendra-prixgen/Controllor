@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Safety Tree View -->
+    <record id="view_fleet_safety_tree" model="ir.ui.view">
+        <field name="name">fleet.safety.tree</field>
+        <field name="model">fleet.safety</field>
+        <field name="arch" type="xml">
+            <tree string="Database Safety &amp; Neutralizer">
+                <field name="project_name" font_weight="bold"/>
+                <field name="branch_name"/>
+                <field name="outgoing_mail_active" widget="boolean_toggle"/>
+                <field name="incoming_mail_active" widget="boolean_toggle"/>
+                <field name="payment_mode" widget="badge" decoration-success="payment_mode == 'test'" decoration-danger="payment_mode == 'live'"/>
+                <field name="staging_flag" widget="boolean_toggle"/>
+                <field name="last_checked"/>
+                <button name="action_preset_sandbox" string="Neutralize (Safe)" type="object" icon="fa-shield" class="btn btn-sm btn-outline-success" groups="fleet_connector.group_fleet_developer"/>
+                <button name="action_preset_production" string="Live Mode" type="object" icon="fa-bolt" class="btn btn-sm btn-outline-warning" groups="fleet_connector.group_fleet_developer"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Safety Form View -->
+    <record id="view_fleet_safety_form" model="ir.ui.view">
+        <field name="name">fleet.safety.form</field>
+        <field name="model">fleet.safety</field>
+        <field name="arch" type="xml">
+            <form string="Database Safety &amp; Neutralization Control">
+                <header>
+                    <button name="action_preset_sandbox" string="Neutralize Database (Sandbox Safe)" type="object" class="btn btn-primary" icon="fa-shield" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_preset_production" string="Activate Live Production Mode" type="object" class="btn btn-warning" icon="fa-exclamation-triangle" confirm="Are you sure you want to enable live outgoing mail servers and live payment gateways for this environment?" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_refresh_status" string="Inspect Environment" type="object" class="btn btn-secondary" icon="fa-refresh"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="display_title" string="Safety Profile"/>
+                        <h1>
+                            <field name="display_title"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Target Environment">
+                            <field name="project_name"/>
+                            <field name="branch_name"/>
+                            <field name="last_checked"/>
+                        </group>
+                        <group string="Safety Parameters">
+                            <label for="outgoing_mail_active"/>
+                            <div class="o_row">
+                                <field name="outgoing_mail_active" readonly="1"/>
+                                <button name="action_toggle_outgoing_mail" string="Toggle Mail" type="object" class="btn btn-sm btn-outline-secondary" groups="fleet_connector.group_fleet_developer"/>
+                            </div>
+
+                            <label for="incoming_mail_active"/>
+                            <div class="o_row">
+                                <field name="incoming_mail_active" readonly="1"/>
+                                <button name="action_toggle_incoming_mail" string="Toggle Inbound" type="object" class="btn btn-sm btn-outline-secondary" groups="fleet_connector.group_fleet_developer"/>
+                            </div>
+
+                            <label for="payment_mode"/>
+                            <div class="o_row">
+                                <field name="payment_mode" widget="badge" decoration-success="payment_mode == 'test'" decoration-danger="payment_mode == 'live'"/>
+                                <button name="action_toggle_payment_mode" string="Toggle Payment Mode" type="object" class="btn btn-sm btn-outline-secondary ms-2" groups="fleet_connector.group_fleet_developer"/>
+                            </div>
+
+                            <field name="staging_flag"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_safety" model="ir.actions.act_window">
+        <field name="name">Safety &amp; Neutralizer</field>
+        <field name="res_model">fleet.safety</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

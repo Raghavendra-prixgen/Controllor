@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Build Tree View -->
+    <record id="view_fleet_build_tree" model="ir.ui.view">
+        <field name="name">fleet.build.tree</field>
+        <field name="model">fleet.build</field>
+        <field name="arch" type="xml">
+            <tree string="Build &amp; Deployment History" create="false" decoration-success="status == 'success'" decoration-danger="status == 'failed'" decoration-warning="status == 'running'">
+                <field name="timestamp"/>
+                <field name="project_name" font_weight="bold"/>
+                <field name="branch_name"/>
+                <field name="short_sha" font_weight="bold"/>
+                <field name="commit_message"/>
+                <field name="author"/>
+                <field name="exit_code"/>
+                <field name="status" widget="badge" decoration-success="status == 'success'" decoration-danger="status == 'failed'" decoration-warning="status == 'running'"/>
+                <field name="trigger_source"/>
+                <button name="action_analyze_build_errors" string="Diagnose Error" type="object" icon="fa-stethoscope" class="btn btn-sm btn-outline-info"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Build Form View -->
+    <record id="view_fleet_build_form" model="ir.ui.view">
+        <field name="name">fleet.build.form</field>
+        <field name="model">fleet.build</field>
+        <field name="arch" type="xml">
+            <form string="Build &amp; Deployment Log">
+                <header>
+                    <button name="action_fetch_log" string="Fetch Console Log" type="object" class="btn btn-primary" icon="fa-download"/>
+                    <button name="action_analyze_build_errors" string="Diagnose with AI Error Resolver" type="object" class="btn btn-info" icon="fa-stethoscope"/>
+                    <field name="status" widget="statusbar" statusbar_visible="success,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="build_id_str" string="Build Record"/>
+                        <h1>
+                            <field name="build_id_str"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Target Environment">
+                            <field name="project_name"/>
+                            <field name="branch_name"/>
+                            <field name="timestamp"/>
+                            <field name="trigger_source"/>
+                        </group>
+                        <group string="Git Commit Details">
+                            <field name="commit_sha"/>
+                            <field name="short_sha"/>
+                            <field name="commit_message"/>
+                            <field name="author"/>
+                            <field name="exit_code"/>
+                            <field name="log_file"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Live Console Output / Build Log" name="console_log">
+                            <field name="log_content" widget="text" placeholder="Click 'Fetch Console Log' to load raw platform build logs..." style="font-family: monospace; background: #0f172a; color: #38bdf8; padding: 15px; border-radius: 6px; min-height: 350px;"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Build Search View -->
+    <record id="view_fleet_build_search" model="ir.ui.view">
+        <field name="name">fleet.build.search</field>
+        <field name="model">fleet.build</field>
+        <field name="arch" type="xml">
+            <search string="Search Builds">
+                <field name="project_name"/>
+                <field name="branch_name"/>
+                <field name="commit_sha"/>
+                <field name="author"/>
+                <filter string="Failed Builds" name="filter_failed" domain="[('status', '=', 'failed')]"/>
+                <filter string="Successful Builds" name="filter_success" domain="[('status', '=', 'success')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="group_project" domain="[]" context="{'group_by': 'project_name'}"/>
+                    <filter string="Branch" name="group_branch" domain="[]" context="{'group_by': 'branch_name'}"/>
+                    <filter string="Status" name="group_status" domain="[]" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_build" model="ir.actions.act_window">
+        <field name="name">Builds &amp; Deployments</field>
+        <field name="res_model">fleet.build</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

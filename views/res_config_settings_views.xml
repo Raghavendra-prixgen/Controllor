@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_fleet" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.fleet</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="70"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Fleet Control" string="Fleet Control" name="fleet_connector">
+                    <block title="Fleet Control Room Connection" name="fleet_connection_settings">
+                        <setting id="fleet_platform_url_setting" string="Platform Base Endpoint" help="Base URL of the Fleet Platform Control Room daemon.">
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <field name="fleet_platform_url" class="o_light_label" placeholder="http://127.0.0.1:8000"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="fleet_default_api_key_setting" string="Master Service Token (Fallback)" help="System-wide master API key used as fallback if individual operators do not supply personal tokens.">
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <field name="fleet_default_api_key" password="True" placeholder="admin-secret-key..."/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="fleet_default_odoo_version_setting" string="Default Odoo Version" help="Default Enterprise target version when creating new projects.">
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <field name="fleet_default_odoo_version" class="o_light_label"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="fleet_test_connection_setting" string="Connection Diagnostics" help="Test connectivity to the configured Fleet endpoint.">
+                            <div class="mt8">
+                                <button name="action_test_fleet_connection" string="Test Connection to Fleet" type="object" class="btn btn-primary" icon="fa-plug"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_fleet_config_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'fleet_connector', 'bin_size': False}</field>
+    </record>
+</odoo>

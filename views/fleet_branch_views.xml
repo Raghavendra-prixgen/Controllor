@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Branch Tree View -->
+    <record id="view_fleet_branch_tree" model="ir.ui.view">
+        <field name="name">fleet.branch.tree</field>
+        <field name="model">fleet.branch</field>
+        <field name="arch" type="xml">
+            <tree string="Environments &amp; Branches" decoration-success="status == 'running'" decoration-danger="status in ('stopped', 'error')" decoration-warning="status == 'building'">
+                <field name="project_name" font_weight="bold"/>
+                <field name="branch_name"/>
+                <field name="branch_type" widget="badge" decoration-primary="branch_type == 'main'" decoration-info="branch_type == 'staging'"/>
+                <field name="status" widget="badge" decoration-success="status == 'running'" decoration-danger="status in ('stopped', 'error')" decoration-warning="status == 'building'"/>
+                <field name="domain_url" widget="url"/>
+                <field name="db_name"/>
+                <field name="last_commit_sha" optional="show"/>
+                <field name="last_commit_msg" optional="hide"/>
+                <field name="last_synced" widget="remaining_days"/>
+                <button name="action_open_env_url" string="Open URL" type="object" icon="fa-external-link" class="btn btn-sm btn-outline-primary"/>
+                <button name="action_rebuild_branch" string="Rebuild" type="object" icon="fa-refresh" class="btn btn-sm btn-outline-secondary" groups="fleet_connector.group_fleet_developer"/>
+                <button name="action_destroy_branch" string="Destroy" type="object" icon="fa-trash text-danger" class="btn btn-sm btn-outline-danger" confirm="Are you sure you want to destroy this staging branch?" groups="fleet_connector.group_fleet_developer"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Branch Form View -->
+    <record id="view_fleet_branch_form" model="ir.ui.view">
+        <field name="name">fleet.branch.form</field>
+        <field name="model">fleet.branch</field>
+        <field name="arch" type="xml">
+            <form string="Fleet Environment">
+                <header>
+                    <button name="action_open_env_url" string="Open Environment" type="object" class="btn btn-primary" icon="fa-external-link"/>
+                    <button name="action_rebuild_branch" string="Rebuild / Deploy" type="object" class="btn btn-secondary" icon="fa-refresh" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_backup_branch" string="Take Database Backup" type="object" class="btn btn-secondary" icon="fa-database" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_optimize_branch_db" string="Optimize DB" type="object" class="btn btn-secondary" icon="fa-wrench" groups="fleet_connector.group_fleet_developer"/>
+                    <button name="action_destroy_branch" string="Destroy Staging" type="object" class="btn btn-danger" icon="fa-trash" confirm="Permanently destroy this staging container and database?" groups="fleet_connector.group_fleet_developer" invisible="branch_type == 'main'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="running,stopped"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Environment Identifier"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Project &amp; Topology">
+                            <field name="project_id"/>
+                            <field name="branch_name"/>
+                            <field name="slug"/>
+                            <field name="branch_type"/>
+                        </group>
+                        <group string="Runtime &amp; Database">
+                            <field name="domain_url" widget="url"/>
+                            <field name="db_name"/>
+                            <field name="last_synced"/>
+                        </group>
+                    </group>
+                    <group string="Git Commit Metadata">
+                        <group>
+                            <field name="last_commit_sha"/>
+                            <field name="last_commit_author"/>
+                        </group>
+                        <group>
+                            <field name="last_commit_msg"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Branch Search View -->
+    <record id="view_fleet_branch_search" model="ir.ui.view">
+        <field name="name">fleet.branch.search</field>
+        <field name="model">fleet.branch</field>
+        <field name="arch" type="xml">
+            <search string="Search Environments">
+                <field name="name"/>
+                <field name="project_name"/>
+                <field name="branch_name"/>
+                <field name="domain_url"/>
+                <filter string="Production (Main)" name="filter_main" domain="[('branch_type', '=', 'main')]"/>
+                <filter string="Ephemeral Staging" name="filter_staging" domain="[('branch_type', '=', 'staging')]"/>
+                <separator/>
+                <filter string="Running" name="filter_running" domain="[('status', '=', 'running')]"/>
+                <filter string="Stopped" name="filter_stopped" domain="[('status', '=', 'stopped')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="group_project" domain="[]" context="{'group_by': 'project_id'}"/>
+                    <filter string="Environment Type" name="group_type" domain="[]" context="{'group_by': 'branch_type'}"/>
+                    <filter string="Status" name="group_status" domain="[]" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_branch" model="ir.actions.act_window">
+        <field name="name">Environments &amp; Staging</field>
+        <field name="res_model">fleet.branch</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Backup Tree View -->
+    <record id="view_fleet_backup_tree" model="ir.ui.view">
+        <field name="name">fleet.backup.tree</field>
+        <field name="model">fleet.backup</field>
+        <field name="arch" type="xml">
+            <tree string="Database Backups" create="false">
+                <field name="created_at"/>
+                <field name="project_name" font_weight="bold"/>
+                <field name="branch_name"/>
+                <field name="filename"/>
+                <field name="file_size_formatted"/>
+                <field name="backup_format" widget="badge"/>
+                <field name="reason"/>
+                <button name="action_download_backup" string="Download" type="object" icon="fa-download" class="btn btn-sm btn-outline-primary"/>
+                <button name="action_open_restore_wizard" string="Restore" type="object" icon="fa-history text-danger" class="btn btn-sm btn-outline-danger" groups="fleet_connector.group_fleet_developer"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Backup Form View -->
+    <record id="view_fleet_backup_form" model="ir.ui.view">
+        <field name="name">fleet.backup.form</field>
+        <field name="model">fleet.backup</field>
+        <field name="arch" type="xml">
+            <form string="Database Backup Snapshot">
+                <header>
+                    <button name="action_download_backup" string="Download Backup File" type="object" class="btn btn-primary" icon="fa-download"/>
+                    <button name="action_open_restore_wizard" string="Restore to Environment" type="object" class="btn btn-danger" icon="fa-history" groups="fleet_connector.group_fleet_developer"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="filename" string="Backup File"/>
+                        <h1>
+                            <field name="filename"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Source Environment">
+                            <field name="project_id"/>
+                            <field name="project_name"/>
+                            <field name="branch_name"/>
+                        </group>
+                        <group string="Snapshot Metadata">
+                            <field name="created_at"/>
+                            <field name="file_size_formatted"/>
+                            <field name="file_size_bytes"/>
+                            <field name="backup_format"/>
+                            <field name="reason"/>
+                            <field name="download_url" widget="url"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Backup Search View -->
+    <record id="view_fleet_backup_search" model="ir.ui.view">
+        <field name="name">fleet.backup.search</field>
+        <field name="model">fleet.backup</field>
+        <field name="arch" type="xml">
+            <search string="Search Backups">
+                <field name="filename"/>
+                <field name="project_name"/>
+                <field name="branch_name"/>
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="group_project" domain="[]" context="{'group_by': 'project_name'}"/>
+                    <filter string="Environment" name="group_branch" domain="[]" context="{'group_by': 'branch_name'}"/>
+                    <filter string="Format" name="group_format" domain="[]" context="{'group_by': 'backup_format'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_backup" model="ir.actions.act_window">
+        <field name="name">Database Backups</field>
+        <field name="res_model">fleet.backup</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Module Category -->
+        <record id="module_category_fleet_control" model="ir.module.category">
+            <field name="name">Fleet Platform Control</field>
+            <field name="description">Manage and interact with Odoo.sh fleet environments, staging branches, and deployments.</field>
+            <field name="sequence">25</field>
+        </record>
+
+        <!-- Viewer Role Group -->
+        <record id="group_fleet_viewer" model="res.groups">
+            <field name="name">Fleet Viewer</field>
+            <field name="category_id" ref="module_category_fleet_control"/>
+            <field name="comment">Can view fleet projects, active staging branches, build logs, and status.</field>
+        </record>
+
+        <!-- Developer Role Group -->
+        <record id="group_fleet_developer" model="res.groups">
+            <field name="name">Fleet Developer</field>
+            <field name="category_id" ref="module_category_fleet_control"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_viewer'))]"/>
+            <field name="comment">Can trigger branch builds, create/destroy staging environments, run database safety controls, take backups, and run error resolver fixes.</field>
+        </record>
+
+        <!-- Administrator Role Group -->
+        <record id="group_fleet_admin" model="res.groups">
+            <field name="name">Fleet Administrator</field>
+            <field name="category_id" ref="module_category_fleet_control"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_developer'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+            <field name="comment">Full administrative access to initialize projects, manage platform settings, delete projects, and execute production restores.</field>
+        </record>
+    </data>
+</odoo>

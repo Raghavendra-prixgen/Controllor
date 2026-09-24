@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu Item -->
+    <menuitem id="menu_fleet_root"
+              name="Fleet Control Room"
+              web_icon="fleet_connector,static/description/icon.png"
+              sequence="25"
+              groups="fleet_connector.group_fleet_viewer"/>
+
+    <!-- Primary Submenus -->
+    <menuitem id="menu_fleet_project"
+              name="Projects"
+              parent="menu_fleet_root"
+              action="action_fleet_project"
+              sequence="10"/>
+
+    <menuitem id="menu_fleet_branch"
+              name="Environments &amp; Staging"
+              parent="menu_fleet_root"
+              action="action_fleet_branch"
+              sequence="20"/>
+
+    <menuitem id="menu_fleet_build"
+              name="Builds &amp; Deployments"
+              parent="menu_fleet_root"
+              action="action_fleet_build"
+              sequence="30"/>
+
+    <menuitem id="menu_fleet_backup"
+              name="Database Backups"
+              parent="menu_fleet_root"
+              action="action_fleet_backup"
+              sequence="40"/>
+
+    <menuitem id="menu_fleet_safety"
+              name="Safety &amp; Neutralizer"
+              parent="menu_fleet_root"
+              action="action_fleet_safety"
+              sequence="50"
+              groups="fleet_connector.group_fleet_developer"/>
+
+    <menuitem id="menu_fleet_error_resolver"
+              name="Diagnostics &amp; AI Resolver"
+              parent="menu_fleet_root"
+              action="action_fleet_error_resolver"
+              sequence="60"/>
+
+    <menuitem id="menu_fleet_audit_log"
+              name="Audit Trail"
+              parent="menu_fleet_root"
+              action="action_fleet_audit_log"
+              sequence="70"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_fleet_config"
+              name="Configuration"
+              parent="menu_fleet_root"
+              sequence="100"
+              groups="fleet_connector.group_fleet_admin"/>
+
+    <menuitem id="menu_fleet_settings"
+              name="Settings"
+              parent="menu_fleet_config"
+              action="action_fleet_config_settings"
+              sequence="10"/>
+
+    <menuitem id="menu_fleet_init_project"
+              name="Scaffold New Project"
+              parent="menu_fleet_config"
+              action="action_fleet_init_project_wizard"
+              sequence="20"/>
+</odoo>

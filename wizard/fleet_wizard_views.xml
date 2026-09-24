@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. Create Staging Branch Wizard -->
+    <record id="view_fleet_create_staging_wizard_form" model="ir.ui.view">
+        <field name="name">fleet.create.staging.wizard.form</field>
+        <field name="model">fleet.create.staging.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Staging Environment">
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Branch Out Staging Environment</h2>
+                        <p class="text-muted">Spawn an isolated ephemeral container and clone database from source.</p>
+                    </div>
+                    <group>
+                        <field name="project_id" readonly="1"/>
+                        <field name="target_branch" placeholder="e.g. feat-pos-improvements, bugfix-checkout"/>
+                        <field name="source_branch" placeholder="main"/>
+                        <field name="neutralize_database"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_create" string="Create &amp; Deploy Staging" type="object" class="btn btn-primary" icon="fa-rocket"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- 2. Restore Backup Wizard -->
+    <record id="view_fleet_restore_wizard_form" model="ir.ui.view">
+        <field name="name">fleet.restore.wizard.form</field>
+        <field name="model">fleet.restore.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Restore Database Backup">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading"><i class="fa fa-exclamation-triangle"/> Warning: Database Overwrite</h4>
+                    <p>Restoring this database snapshot will permanently overwrite the target branch database. Please ensure you have taken a fresh backup if needed.</p>
+                </div>
+                <sheet>
+                    <group>
+                        <field name="project_name" readonly="1"/>
+                        <field name="backup_filename" readonly="1"/>
+                        <field name="target_branch"/>
+                        <field name="confirm_acknowledged"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_restore" string="Proceed with Restoration" type="object" class="btn btn-danger" icon="fa-history"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- 3. Database Safety Action Wizard -->
+    <record id="view_fleet_database_safety_wizard_form" model="ir.ui.view">
+        <field name="name">fleet.database.safety.wizard.form</field>
+        <field name="model">fleet.database.safety.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Adjust Environment Safety Controls">
+                <sheet>
+                    <group>
+                        <field name="project_name"/>
+                        <field name="branch_name"/>
+                        <field name="action_type" widget="radio"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_apply_safety" string="Apply Safety Parameters" type="object" class="btn btn-primary" icon="fa-shield"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- 4. Scaffold / Init New Project Wizard -->
+    <record id="view_fleet_init_project_wizard_form" model="ir.ui.view">
+        <field name="name">fleet.init.project.wizard.form</field>
+        <field name="model">fleet.init.project.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Scaffold New Fleet Project">
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Initialize New Project Repository</h2>
+                        <p class="text-muted">Creates isolated production and staging blueprints for a client repository.</p>
+                    </div>
+                    <group>
+                        <field name="name" placeholder="e.g. acme-retail, globex-logistics"/>
+                        <field name="repo_url" placeholder="https://github.com/org/repo.git"/>
+                        <field name="odoo_version"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_init" string="Scaffold &amp; Init Project" type="object" class="btn btn-primary" icon="fa-plus-circle"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fleet_init_project_wizard" model="ir.actions.act_window">
+        <field name="name">Scaffold New Project</field>
+        <field name="res_model">fleet.init.project.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="groups_id" eval="[(4, ref('fleet_connector.group_fleet_admin'))]"/>
+    </record>
+</odoo>

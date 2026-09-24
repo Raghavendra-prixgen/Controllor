@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Users Form View Extension -->
+    <record id="view_users_form_fleet_inherit" model="ir.ui.view">
+        <field name="name">res.users.form.fleet.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Fleet Platform Access" name="fleet_access">
+                    <group string="Personal Authentication &amp; Credentials">
+                        <field name="fleet_api_url" placeholder="http://127.0.0.1:8000 (leave blank to use system default)"/>
+                        <label for="fleet_personal_token"/>
+                        <div class="o_row">
+                            <field name="fleet_personal_token" password="True" placeholder="Enter your Fleet Personal Access Token / API Key..."/>
+                            <button name="action_verify_fleet_token" string="Verify Token &amp; Sync Rights" type="object" class="btn btn-primary btn-sm ms-2" icon="fa-check-circle"/>
+                        </div>
+                    </group>
+                    <group string="Platform Token Status &amp; Resolved Rights">
+                        <group>
+                            <field name="fleet_is_authenticated" widget="boolean_toggle"/>
+                            <field name="fleet_role" widget="badge" decoration-success="fleet_role == 'admin'" decoration-info="fleet_role == 'developer'" decoration-muted="fleet_role == 'viewer'"/>
+                            <field name="fleet_last_verified"/>
+                        </group>
+                        <group>
+                            <field name="fleet_username"/>
+                            <field name="fleet_display_name"/>
+                            <field name="fleet_assigned_projects"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- User Preferences View Extension -->
+    <record id="view_users_form_simple_modif_fleet" model="ir.ui.view">
+        <field name="name">res.users.preferences_form.fleet</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[last()]" position="after">
+                <group string="Fleet Platform Access (Odoo.sh Fleet)">
+                    <field name="fleet_api_url" placeholder="http://127.0.0.1:8000"/>
+                    <label for="fleet_personal_token"/>
+                    <div class="o_row">
+                        <field name="fleet_personal_token" password="True" placeholder="Enter personal token..."/>
+                        <button name="action_verify_fleet_token" string="Verify Token" type="object" class="btn btn-primary btn-sm ms-2" icon="fa-check-circle"/>
+                    </div>
+                    <field name="fleet_is_authenticated" readonly="1"/>
+                    <field name="fleet_role" readonly="1" widget="badge" decoration-success="fleet_role == 'admin'" decoration-info="fleet_role == 'developer'"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

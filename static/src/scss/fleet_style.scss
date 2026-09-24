@@ -1,0 +1,32 @@
+/* Fleet Platform Odoo Connector Styles */
+
+.o_fleet_log_console {
+    background-color: #0f172a !important;
+    color: #38bdf8 !important;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', Courier, monospace !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    border-radius: 6px !important;
+    padding: 16px !important;
+    border: 1px solid #1e293b !important;
+}
+
+.badge-fleet-running {
+    background-color: #10b981 !important;
+    color: #ffffff !important;
+}
+
+.badge-fleet-building {
+    background-color: #f59e0b !important;
+    color: #ffffff !important;
+}
+
+.badge-fleet-stopped {
+    background-color: #64748b !important;
+    color: #ffffff !important;
+}
+
+.badge-fleet-error {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+}
